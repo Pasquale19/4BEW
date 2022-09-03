@@ -89,7 +89,6 @@
     <Compile Include="Listview_Level.Designer.cs">
       <DependentUpon>Listview_Level.cs</DependentUpon>
     </Compile>
-    <Compile Include="PdfFunctions.cs" />
     <Compile Include="LevelDesigner.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

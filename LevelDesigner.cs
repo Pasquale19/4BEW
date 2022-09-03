@@ -10,7 +10,8 @@ using System.Drawing.Imaging;
 namespace PdfMerge
 {
     public class LevelDesigner
-    { private static Point pt0 = new Point(0, 0);
+    {
+        private static Point pt0 = new Point(0, 0);
         public Image ToSquareSize(Image img)
         {
             Size orgSize = img.Size;
@@ -27,11 +28,11 @@ namespace PdfMerge
             img = Resize(img, height, width);
             return img;
         }
-    
+
         /// <summary>
         /// fügt das Level mit Logo in die angegebene Vorlage ein
         /// </summary>
-        public static Bitmap insertLevel(int level, Bitmap bmpLevel, string PathLevelBmp = @"resources/LevelSign.bmp", bool ohneHintergrundBild=true)
+        public static Bitmap insertLevel(int level, Bitmap bmpLevel, string PathLevelBmp = @"resources/LevelSign.bmp", bool ohneHintergrundBild = true)
         {
             Bitmap bmpL = new Bitmap(PathLevelBmp);
             int ptX = bmpLevel.Width / 2 - bmpL.Width / 2;
@@ -63,10 +64,10 @@ namespace PdfMerge
 
         }
 
-        public static Image Resize(Image img, int newHeight, int newWidth=0)
+        public static Image Resize(Image img, int newHeight, int newWidth = 0)
         {
             Size orgSize = img.Size;
-            if (newWidth==0)
+            if (newWidth == 0)
             {
                 newWidth = img.Width;
             }
@@ -158,43 +159,43 @@ namespace PdfMerge
         /// <summary>
         /// färbt den Hintergrund der schwarzen Boxen
         /// </summary>
-        public static void ReColor(string path,int[] Startpoint, int[] Endpoint)
+        public static void ReColor(string path, int[] Startpoint, int[] Endpoint)
         {
-            
-             Bitmap bmp = new Bitmap(path);
-             Size BmpSize = bmp.Size;
-             int i = 0;
-             int j = 0;
-             bool gefunden = false;
 
-                 for (i=Startpoint[0];i<Endpoint[0]&&i<bmp.Width;i++)
-                 {
-                     for (j=Startpoint[1];j<Endpoint[1]&&j<bmp.Height;j++)
-                     {
-                        Color pixelcolor = bmp.GetPixel(i, j);
-                         if (pixelcolor==Color.Transparent)
-                        {
-                            bmp.SetPixel(i,j, bmp.GetPixel(i, j-1));
-                        }
-                         else
-                        {
-                            bmp.SetPixel(i, j, bmp.GetPixel(i, j-1));
-                        }
-                            
-                     }
-                 }
-             
-                bmp.Save("Vorlagen/4BDEWVorlage2_Bearbeitet.bmp");
+            Bitmap bmp = new Bitmap(path);
+            Size BmpSize = bmp.Size;
+            int i = 0;
+            int j = 0;
+            bool gefunden = false;
+
+            for (i = Startpoint[0]; i < Endpoint[0] && i < bmp.Width; i++)
+            {
+                for (j = Startpoint[1]; j < Endpoint[1] && j < bmp.Height; j++)
+                {
+                    Color pixelcolor = bmp.GetPixel(i, j);
+                    if (pixelcolor == Color.Transparent)
+                    {
+                        bmp.SetPixel(i, j, bmp.GetPixel(i, j - 1));
+                    }
+                    else
+                    {
+                        bmp.SetPixel(i, j, bmp.GetPixel(i, j - 1));
+                    }
+
+                }
+            }
+
+            bmp.Save("Vorlagen/4BDEWVorlage2_Bearbeitet.bmp");
 
         }
-       
+
         /// <summary>
         /// fügt die 4 Bilder in die Vorlage ein
         /// </summary>
-        public static Bitmap insert4Pict(string[] DateiPfad, Bitmap bmp=null)
+        public static Bitmap insert4Pict(string[] DateiPfad, Bitmap bmp = null)
         {
             if (bmp == null) { bmp = new Bitmap(@"resources/4BDEWVorlage2.bmp"); }
-            
+
             Bitmap[] pics = new Bitmap[4];
             using (Graphics g = Graphics.FromImage(bmp))
             {
@@ -204,16 +205,16 @@ namespace PdfMerge
                 Point pt0 = new Point(0, 0);
                 Point[] pt = new Point[4]; //Einfügepunkte
                 pt[0] = new Point(30, 144); //die Reihenfolge gehet von links nach rechts, oben nach unten
-                pt[1] = new Point(bmp.Width - pt[0].X - konst.PicsWidth,pt[0].Y);
+                pt[1] = new Point(bmp.Width - pt[0].X - konst.PicsWidth, pt[0].Y);
                 pt[2] = new Point(pt[0].X, 446);
                 pt[3] = new Point(pt[1].X, pt[2].Y);
-                g.DrawImage(bmp, new Rectangle(new Point(0,0), bmp.Size));
-                for (int i=0;i<4;i++)
+                g.DrawImage(bmp, new Rectangle(new Point(0, 0), bmp.Size));
+                for (int i = 0; i < 4; i++)
                 {
                     pics[i] = new Bitmap(DateiPfad[i]);
                     Size destPicSize = new Size(konst.PicsWidth, konst.PicsHeight);
-                    float destPicRatio = destPicSize.Width/(destPicSize.Height);
-                    Rectangle destPic = new Rectangle(pt[i],destPicSize);
+                    float destPicRatio = destPicSize.Width / (destPicSize.Height);
+                    Rectangle destPic = new Rectangle(pt[i], destPicSize);
 
                     //Rectangle srcRect = new Rectangle(pt0, pics[i].Size);
                     RectangleF srcRect = cuttingWindow(pics[i].Size, destPicRatio);
@@ -223,24 +224,24 @@ namespace PdfMerge
             //bmp.Save("Test/picAdded.bmp");
             return bmp;
         }
-        private static RectangleF cuttingWindow(Size oldSize,float newSizeRatio)
+        private static RectangleF cuttingWindow(Size oldSize, float newSizeRatio)
         {
             float picRatio = oldSize.Width / oldSize.Height;
             float newWidth = oldSize.Width;
             float newHeight = oldSize.Height;
-            if (picRatio>newSizeRatio)
+            if (picRatio > newSizeRatio)
             {
                 newWidth = newSizeRatio * oldSize.Height;
             }
-            if (picRatio<newSizeRatio)
+            if (picRatio < newSizeRatio)
             {
                 newHeight = oldSize.Width / newSizeRatio;
             }
-            float UpperLeftX=(oldSize.Width-newWidth)/ 2;
+            float UpperLeftX = (oldSize.Width - newWidth) / 2;
             float UpperLefY = (oldSize.Height - newHeight) / 2;
             return new RectangleF(UpperLeftX, UpperLefY, newWidth, newHeight);
         }
-       
+
 
         /// <summary>
         /// fügt die schwarzen Boxen in die Vorlage ein, maximale Anzahl sind  7
@@ -251,8 +252,8 @@ namespace PdfMerge
             Bitmap blackBox = new Bitmap(@"resources/BlackBox.bmp");
             Size SizeBlackBox = new Size(65, 65);
             int space = 3; //Platz zwischen den Boxen in Pixel
-            int XStart = (bmp.Width-(anz * SizeBlackBox.Width + (anz - 1) * space))/2;
-            Point pt = new Point(XStart,807);
+            int XStart = (bmp.Width - (anz * SizeBlackBox.Width + (anz - 1) * space)) / 2;
+            Point pt = new Point(XStart, 807);
             using (Graphics g = Graphics.FromImage(bmp))
             {
                 g.SmoothingMode = SmoothingMode.AntiAlias;
@@ -264,21 +265,22 @@ namespace PdfMerge
                 {
                     Rectangle destRect = new Rectangle(pt, SizeBlackBox);
                     g.DrawImage(blackBox, destRect, new Rectangle(pt0, blackBox.Size), GraphicsUnit.Pixel);
-                    pt = pt + new Size(SizeBlackBox.Width + space,0);
+                    pt = pt + new Size(SizeBlackBox.Width + space, 0);
                 }
 
             }
             if (Kontrollspeicherung)
-            { try { bmp.Save("Test/AddBlackBox.bmp"); } catch { }
-            
-            
+            {
+                try { bmp.Save("Test/AddBlackBox.bmp"); } catch { }
+
+
             }
             return bmp;
         }
         /// <summary>
         /// fügt die Lösung ein
         /// </summary>
-        public static Bitmap InsertLSG(Bitmap bmp, string LSG,int level, Boolean Kontrollspeicherung = false,string PathLösung="Lösungen/")
+        public static Bitmap InsertLSG(Bitmap bmp, string LSG, int level, Boolean Kontrollspeicherung = false, string PathLösung = "Lösungen/")
         {
 
             Size SizeBlackBox = new Size(65, 65);
@@ -296,22 +298,29 @@ namespace PdfMerge
                 for (int i = 0; i < LSG.Length; i++)
                 {
                     Rectangle destRect = new Rectangle(pt, SizeBlackBox);
-                    g.DrawImage(bmpBox, destRect, new Rectangle(pt0,bmpBox.Size), GraphicsUnit.Pixel);
+                    g.DrawImage(bmpBox, destRect, new Rectangle(pt0, bmpBox.Size), GraphicsUnit.Pixel);
 
                     Font font = new Font("LsgBuchst", 26, FontStyle.Bold);
                     SolidBrush shadowBrush = new SolidBrush(Color.Black);
                     StringFormat sfCenter = new StringFormat();
                     sfCenter.LineAlignment = StringAlignment.Center;
                     sfCenter.Alignment = StringAlignment.Center;
-                    
+
                     g.DrawString(LSG[i].ToString().ToUpper(), font, Brushes.Black, destRect, sfCenter);
 
 
                     pt = pt + new Size(SizeBlackBox.Width + space, 0);
                 }
-                if (Kontrollspeicherung) { bmp.Save(PathLösung + "Lvl" +level.ToString()+ "Lsg" + "_"+LSG + ".bmp"); }
+                if (Kontrollspeicherung)
+                {
+                    try
+                    {
+                        bmp.Save(PathLösung + "Lvl" + level.ToString() + "Lsg" + "_" + LSG + ".bmp");
+                    }
+                    catch { System.Windows.Forms.MessageBox.Show("Kontrollspeicherung fehlgeschlagen"); }
+                }
             }
-            
+
             return bmp;
         }
         /// <summary>
@@ -333,14 +342,14 @@ namespace PdfMerge
                 int YfirstLine = 960;
                 int YsecondLine = 1042;
                 Point pt = new Point(linkerRand, YfirstLine);//Startpunkt
-                
-                for (int i=0; i<ShuffleString.Length;i++)
+
+                for (int i = 0; i < ShuffleString.Length; i++)
                 {
                     int space = 6; //Platz zwischen den Boxen
-                    Rectangle destRectF = new Rectangle(pt,new Size(konst.BuchstBoxWidth,konst.BuchstBoxHeight));
+                    Rectangle destRectF = new Rectangle(pt, new Size(konst.BuchstBoxWidth, konst.BuchstBoxHeight));
                     //einfügen der Box
                     //g.DrawImage(bmpBox, destRectF, new Rectangle(pt0, bmpBox.Size),GraphicsUnit.Pixel);
-                    
+
                     //formatieren und einfügen des Buchstaben
                     Font font = new Font("LsgBuchst", 26, FontStyle.Bold);
                     SolidBrush shadowBrush = new SolidBrush(Color.Black);
@@ -349,21 +358,21 @@ namespace PdfMerge
                     sfCenter.Alignment = StringAlignment.Center;
                     g.DrawImage(bmpBox, destRectF, new Rectangle(pt0, bmpBox.Size), GraphicsUnit.Pixel);
                     g.DrawString(ShuffleString[i].ToString(), font, Brushes.Black, destRectF, sfCenter);
-                    pt =pt+ new Size(konst.BuchstBoxWidth + space, 0);
-                    if (i==ShuffleString.Length/2-1)
+                    pt = pt + new Size(konst.BuchstBoxWidth + space, 0);
+                    if (i == ShuffleString.Length / 2 - 1)
                     {
                         pt = new Point(linkerRand, YsecondLine);
                     }
                 }
-               
 
-                
+
+
             }
-            img.Save(@"TestBitmap", ImageFormat.Bmp);
+            //img.Save(@"TestBitmap", ImageFormat.Bmp);
             return img;
         }
     }
-    
+
     public static class PictureExtensions
     {
 
